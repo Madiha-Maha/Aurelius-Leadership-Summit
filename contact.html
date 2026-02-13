@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Ascend Leadership Workshop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <h2 onclick="location.href='index.html'">ASCEND</h2>
+        <div id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="schedule.html">Schedule</a>
+            <a href="speakers.html">Speakers</a>
+            <a href="register.html">Register</a>
+            <a href="contact.html" class="active">Contact</a>
+        </div>
+    </nav>
+
+    <main>
+        <h1>Get In Touch</h1>
+        
+        <p style="text-align: center; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto; font-size: 1.1rem;">
+            Have questions about the workshop? Ready to partner with us? We'd love to hear from you.
+        </p>
+
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Your Name *</label>
+                <input type="text" id="name" name="name" placeholder="Full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contactEmail">Email Address *</label>
+                <input type="email" id="contactEmail" name="email" placeholder="your@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject *</label>
+                <input type="text" id="subject" name="subject" placeholder="What is this about?" required>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea id="message" name="message" placeholder="Your message here..." required></textarea>
+            </div>
+
+            <div id="contactMessage"></div>
+
+            <button type="submit" class="btn-submit" id="contactSubmitBtn">Send Message</button>
+        </form>
+
+        <div style="margin-top: 80px; text-align: center; opacity: 0.8;">
+            <h3 style="margin-bottom: 30px;">Additional Contact Information</h3>
+            <p style="margin-bottom: 15px;">
+                <strong>Email:</strong> <a href="mailto:info@ascendworkshop.com">info@ascendworkshop.com</a>
+            </p>
+            <p style="margin-bottom: 15px;">
+                <strong>Phone:</strong> <a href="tel:+18867614791">+1 (886) 761-4791</a>
+            </p>
+            <p>
+                Response time: Within 24 business hours
+            </p>
+        </div>
+
+        <div class="footer-line" style="margin-top: 80px;">STRATEGY.INNOVATION.GROWTH</div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const contactForm = document.getElementById('contactForm');
+        const contactMessageDiv = document.getElementById('contactMessage');
+        const contactSubmitBtn = document.getElementById('contactSubmitBtn');
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            contactMessageDiv.innerHTML = '';
+            contactSubmitBtn.disabled = true;
+            contactSubmitBtn.innerHTML = '<span class="spinner"></span> Sending...';
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('contactEmail').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/contact/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    contactMessageDiv.innerHTML = `<div class="success-message">✓ ${data.message}</div>`;
+                    contactForm.reset();
+                    setTimeout(() => {
+                        contactMessageDiv.innerHTML = '';
+                    }, 5000);
+                } else {
+                    contactMessageDiv.innerHTML = `<div class="error-message">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                contactMessageDiv.innerHTML = `<div class="error-message">✗ Connection error. Make sure the backend server is running on localhost:3000</div>`;
+                console.error('Error:', error);
+            } finally {
+                contactSubmitBtn.disabled = false;
+                contactSubmitBtn.innerHTML = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>

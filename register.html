@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Ascend Leadership Workshop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <h2 onclick="location.href='index.html'">ASCEND</h2>
+        <div id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="schedule.html">Schedule</a>
+            <a href="speakers.html">Speakers</a>
+            <a href="register.html" class="active">Register</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <main>
+        <h1>Register for Ascend</h1>
+        
+        <p style="text-align: center; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
+            Secure your spot at the most transformative leadership workshop of the year. Join 300 visionary entrepreneurs and founders.
+        </p>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Your first name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Last Name *</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Your last name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000">
+            </div>
+
+            <div class="form-group">
+                <label for="company">Company Name</label>
+                <input type="text" id="company" name="company" placeholder="Your company">
+            </div>
+
+            <div class="form-group">
+                <label for="position">Your Position</label>
+                <input type="text" id="position" name="position" placeholder="e.g., Founder, CEO, Director">
+            </div>
+
+            <div class="form-group">
+                <label for="attendanceType">Attendance Type *</label>
+                <select id="attendanceType" name="attendanceType" required>
+                    <option value="standard">Standard Pass</option>
+                    <option value="vip">VIP Pass (Includes Premium Lunch)</option>
+                    <option value="platinum">Platinum Pass (Includes Dinner with Speakers)</option>
+                </select>
+            </div>
+
+            <div id="formMessage"></div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Complete Registration</button>
+        </form>
+
+        <div class="footer-line" style="margin-top: 80px;">STRATEGY.INNOVATION.GROWTH</div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const form = document.getElementById('registrationForm');
+        const messageDiv = document.getElementById('formMessage');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            messageDiv.innerHTML = '';
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Processing...';
+
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                company: document.getElementById('company').value,
+                position: document.getElementById('position').value,
+                attendanceType: document.getElementById('attendanceType').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/registrations/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    messageDiv.innerHTML = `<div class="success-message">✓ ${data.message}</div>`;
+                    form.reset();
+                    setTimeout(() => {
+                        messageDiv.innerHTML = '';
+                    }, 5000);
+                } else {
+                    messageDiv.innerHTML = `<div class="error-message">✗ ${data.message}</div>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = `<div class="error-message">✗ Connection error. Make sure the backend server is running on localhost:3000</div>`;
+                console.error('Error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Complete Registration';
+            }
+        });
+    </script>
+</body>
+</html>
