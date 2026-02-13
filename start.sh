@@ -1,6 +1,8 @@
 #!/bin/bash
-cd frontend
-echo "Starting Frontend on http://localhost:5000"
+cd backend
+echo "Installing dependencies..."
+npm install
 echo ""
-echo "Setting up a simple Python HTTP server..."
-python3 -m http.server 5000
+echo "Starting Ascend Leadership Workshop Backend Server..."
+echo ""
+npm start

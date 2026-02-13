@@ -1,7 +1,9 @@
 @echo off
-REM Frontend Server
-cd frontend
-echo Starting Frontend on http://localhost:5000
+REM Start Backend Server
+cd backend
+echo Installing dependencies...
+npm install
 echo.
-echo Setting up a simple Python HTTP server...
-python -m http.server 5000
+echo Starting Ascend Leadership Workshop Backend Server...
+echo.
+npm start
